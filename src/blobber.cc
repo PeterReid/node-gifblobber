@@ -170,7 +170,7 @@ void Foozle::Work_Slurp(uv_work_t* req) {
     unsigned char *unfiltered = gif_file->SavedImages[0].RasterBits;
     const int filterThreshold = 7;
     for (int i = 0; i < pixel_count; i++) {
-      filtered[i] = unfiltered[i];//clamp(0, (int)unfiltered[i] - filterThreshold, RADAR_COLOR_COUNT-1);  
+      filtered[i] = unfiltered[i];
     }
 
     DGifCloseFile(gif_file);
@@ -266,14 +266,21 @@ void Foozle::Work_Stretch(uv_work_t* req) {
           int out_y1 = (int)((in_y - baton->source_top) * baton->result_height / source_height);
           int out_y2 = (int)(((in_y+1) - baton->source_top) * baton->result_height / source_height);
           
-          for (int in_x = min_in_x; in_x <= max_in_x; in_x++) {
-            int ul = clamp(7, foozle->pixels[in_x + in_y*foozle->gif_width], 22) << SHIFT;
-            int ur = clamp(7, foozle->pixels[in_x+1 + in_y*foozle->gif_width], 22) << SHIFT;
-            int bl = clamp(7, foozle->pixels[in_x + (in_y+1)*foozle->gif_width], 22) << SHIFT;
-            int br = clamp(7, foozle->pixels[in_x+1 + (in_y+1)*foozle->gif_width], 22) << SHIFT;
+          int ul, ur, bl, br;
+          int out_x1, out_x2;
+          
+          ur = clamp(7, foozle->pixels[min_in_x + in_y*foozle->gif_width], 22) << SHIFT;
+          br = clamp(7, foozle->pixels[min_in_x + (in_y+1)*foozle->gif_width], 22) << SHIFT;
+          out_x2 = (int)((min_in_x - baton->source_left) * baton->result_width / source_width);
             
-            int out_x1 = (int)((in_x - baton->source_left) * baton->result_width / source_width);
-            int out_x2 = (int)(((in_x+1) - baton->source_left) * baton->result_width / source_width);
+          for (int in_x = min_in_x; in_x <= max_in_x; in_x++) {
+            ul = ur; // This quad's left is the old quad's right
+            bl = br;
+            ur = clamp(7, foozle->pixels[(in_x+1) + in_y*foozle->gif_width], 22) << SHIFT;
+            br = clamp(7, foozle->pixels[(in_x+1) + (in_y+1)*foozle->gif_width], 22) << SHIFT;
+            
+            out_x1 = out_x2;
+            out_x2 = (int)(((in_x+1) - baton->source_left) * baton->result_width / source_width);
             
             int this_out_y1 = out_y1, this_out_y2 = out_y2;        
             if (this_out_y1 < 0) {
