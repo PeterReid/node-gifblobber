@@ -260,9 +260,13 @@ void Foozle::Work_Stretch(uv_work_t* req) {
         int min_in_y = clamp(0, (int)baton->source_top, foozle->gif_height-1);
         int max_in_y = clamp(0, (int)baton->source_bottom, foozle->gif_height-1);
         
+        int out_y1, out_y2;
+        
+        out_y2 = (int)((min_in_y - baton->source_top) * baton->result_height / source_height);
+          
         for (int in_y = min_in_y; in_y <= max_in_y; in_y++) {
-          int out_y1 = (int)((in_y - baton->source_top) * baton->result_height / source_height);
-          int out_y2 = (int)(((in_y+1) - baton->source_top) * baton->result_height / source_height);
+          out_y1 = out_y2;
+          out_y2 = (int)(((in_y+1) - baton->source_top) * baton->result_height / source_height);
           
           int ul, ur, bl, br;
           int out_x1, out_x2;
