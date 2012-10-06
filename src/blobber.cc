@@ -172,6 +172,9 @@ void Foozle::Work_Slurp(uv_work_t* req) {
     for (int i = 0; i < pixel_count; i++) {
       filtered[i] = unfiltered[i];
     }
+    for (int i = 0; i <= filterThreshold; i++) {
+      foozle->palette[i] = 0;
+    }
 
     DGifCloseFile(gif_file);
     
