@@ -37,6 +37,9 @@ Foozle::Foozle()
     pixels = NULL;
     gif_width = 0;
     gif_height = 0;
+    for (int i = 0; i < 256; i++) {
+        palette[i] = 0;
+    }
 }
 
 Foozle::~Foozle()
@@ -149,6 +152,15 @@ void Foozle::Work_Slurp(uv_work_t* req) {
         DGifCloseFile(gif_file);
         return;
     }
+    
+    if (gif_file->SColorMap) {
+        int colors = clamp(0, gif_file->SColorMap->ColorCount, 256);
+        
+        for (size_t i = 0; i < colors; i++) {
+            GifColorType color = gif_file->SColorMap->Colors[i];
+            foozle->palette[i] = color.Red | (color.Green<<8) | (color.Blue<<16) | 0xff000000;
+        }
+    }
 
     printf("Width = %d, height = %d\n", gif_file->SWidth, gif_file->SHeight);
     foozle->gif_width = gif_file->SWidth;
@@ -158,7 +170,7 @@ void Foozle::Work_Slurp(uv_work_t* req) {
     unsigned char *unfiltered = gif_file->SavedImages[0].RasterBits;
     const int filterThreshold = 7;
     for (int i = 0; i < pixel_count; i++) {
-      filtered[i] = clamp(0, (int)unfiltered[i] - filterThreshold, RADAR_COLOR_COUNT-1);  
+      filtered[i] = unfiltered[i];//clamp(0, (int)unfiltered[i] - filterThreshold, RADAR_COLOR_COUNT-1);  
     }
 
     DGifCloseFile(gif_file);
@@ -241,12 +253,6 @@ void Foozle::Work_Stretch(uv_work_t* req) {
     double source_width = baton->source_right - baton->source_left;
     bool zoomed_in = source_width * 2 < baton->result_width;
 
-    int palette[256];
-    for (int i = 0; i<256; i++) {
-        int brightness = 0xff & (i*16);
-        palette[i] = brightness | (brightness<<8) | (brightness<<16) | 0xff000000;
-    }
-    
     if (zoomed_in) {
         // We are zoomed in enough to require fancy interpolation
         int min_in_x = clamp(0, (int)baton->source_left, foozle->gif_width-1);
@@ -261,10 +267,10 @@ void Foozle::Work_Stretch(uv_work_t* req) {
           int out_y2 = (int)(((in_y+1) - baton->source_top) * baton->result_height / source_height);
           
           for (int in_x = min_in_x; in_x <= max_in_x; in_x++) {
-            int ul = foozle->pixels[in_x + in_y*foozle->gif_width] << SHIFT;
-            int ur = foozle->pixels[in_x+1 + in_y*foozle->gif_width] << SHIFT;
-            int bl = foozle->pixels[in_x + (in_y+1)*foozle->gif_width] << SHIFT;
-            int br = foozle->pixels[in_x+1 + (in_y+1)*foozle->gif_width] << SHIFT;
+            int ul = clamp(7, foozle->pixels[in_x + in_y*foozle->gif_width], 22) << SHIFT;
+            int ur = clamp(7, foozle->pixels[in_x+1 + in_y*foozle->gif_width], 22) << SHIFT;
+            int bl = clamp(7, foozle->pixels[in_x + (in_y+1)*foozle->gif_width], 22) << SHIFT;
+            int br = clamp(7, foozle->pixels[in_x+1 + (in_y+1)*foozle->gif_width], 22) << SHIFT;
             
             int out_x1 = (int)((in_x - baton->source_left) * baton->result_width / source_width);
             int out_x2 = (int)(((in_x+1) - baton->source_left) * baton->result_width / source_width);
@@ -294,7 +300,7 @@ void Foozle::Work_Stretch(uv_work_t* req) {
             interp_quad(ul, ur, bl, br, out_x2-out_x1, this_out_y2-this_out_y1, 
                 baton->dest_pixels + out_x1 + (baton->result_width*this_out_y1), 
                 baton->result_width, 
-                palette);
+                foozle->palette);
           }
         }
     } else {
@@ -313,7 +319,7 @@ void Foozle::Work_Stretch(uv_work_t* req) {
           for (int out_x=0; out_x < baton->result_width; out_x++) {
             int in_x = (int)(out_x*source_width/baton->result_width + baton->source_left);
             if (in_x >=0 && out_x < foozle->gif_width) {
-              baton->dest_pixels[i] = palette[foozle->pixels[in_x + foozle->gif_width*in_y]];
+              baton->dest_pixels[i] = foozle->palette[foozle->pixels[in_x + foozle->gif_width*in_y]];
             }
 
             i++;

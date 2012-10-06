@@ -116,6 +116,7 @@ public:
 private:
     unsigned char *pixels;
     int gif_width, gif_height;
+    int palette[256];
 };
 
 }
