@@ -143,8 +143,6 @@ void Foozle::Work_Slurp(uv_work_t* req) {
         DGifCloseFile(gif_file);
         return;
     }
-    printf("DGifOpen seems to have worked...\n");
-    
     baton->status = DGifSlurp(gif_file);
     
     if (baton->status != GIF_OK) {
@@ -184,9 +182,7 @@ void Foozle::Work_AfterSlurp(uv_work_t* req) {
 
     if (!baton->callback.IsEmpty() && baton->callback->IsFunction()) {
         TRY_CATCH_CALL(foozle->handle_, baton->callback, 1, argv);
-        printf("After teh try-catch\n");
     }
-    printf("hmm\n");
     
     delete baton;
 }
@@ -199,6 +195,16 @@ void Foozle::Work_BeginStretch(Baton* baton) {
 }
 
 #define SHIFT 20
+/*
+ * ul - upper left corner color, left-shifted by SHIFT
+ * ur - upper right corner color, left-shifted by SHIFT
+ * bl - bottom left corner color, left-shifted by SHIFT
+ * br - bottom right corner color, left-shifted by SHIFT
+ * width, height - dimensions of quad to draw
+ * output - pixels to draw onto. One int per pixel
+ * output_stride - how many ints to step to move to the next row
+ * palette - 256 color entries, corresponding to interpolated colors
+ */
 static void interp_quad(int ul, int ur, int bl, int br, int width, int height, int *output, int output_stride, int *palette) {
     if (width==0 || height==0) return;
 
@@ -242,7 +248,6 @@ void Foozle::Work_Stretch(uv_work_t* req) {
     }
     
     if (zoomed_in) {
-        printf("zoomed!\n");
         // We are zoomed in enough to require fancy interpolation
         int min_in_x = clamp(0, (int)baton->source_left, foozle->gif_width-1);
         int max_in_x = clamp(0, (int)baton->source_right, foozle->gif_width-1);
