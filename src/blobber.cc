@@ -260,20 +260,23 @@ void Foozle::Work_Stretch(uv_work_t* req) {
         int min_in_y = clamp(0, (int)baton->source_top, foozle->gif_height-1);
         int max_in_y = clamp(0, (int)baton->source_bottom, foozle->gif_height-1);
         
+        double height_ratio = baton->result_height / source_height;
+        double width_ratio = baton->result_width / source_width;
+
         int out_y1, out_y2;
         
-        out_y2 = (int)((min_in_y - baton->source_top) * baton->result_height / source_height);
+        out_y2 = (int)((min_in_y - baton->source_top) * height_ratio);
           
         for (int in_y = min_in_y; in_y <= max_in_y; in_y++) {
           out_y1 = out_y2;
-          out_y2 = (int)(((in_y+1) - baton->source_top) * baton->result_height / source_height);
+          out_y2 = (int)(((in_y+1) - baton->source_top) * height_ratio);
           
           int ul, ur, bl, br;
           int out_x1, out_x2;
           
           ur = clamp(7, foozle->pixels[min_in_x + in_y*foozle->gif_width], 22) << SHIFT;
           br = clamp(7, foozle->pixels[min_in_x + (in_y+1)*foozle->gif_width], 22) << SHIFT;
-          out_x2 = (int)((min_in_x - baton->source_left) * baton->result_width / source_width);
+          out_x2 = (int)((min_in_x - baton->source_left) * width_ratio);
             
           for (int in_x = min_in_x; in_x <= max_in_x; in_x++) {
             ul = ur; // This quad's left is the old quad's right
@@ -282,7 +285,7 @@ void Foozle::Work_Stretch(uv_work_t* req) {
             br = clamp(7, foozle->pixels[(in_x+1) + (in_y+1)*foozle->gif_width], 22) << SHIFT;
             
             out_x1 = out_x2;
-            out_x2 = (int)(((in_x+1) - baton->source_left) * baton->result_width / source_width);
+            out_x2 = (int)(((in_x+1) - baton->source_left) * width_ratio);
             
             int this_out_y1 = out_y1, this_out_y2 = out_y2;        
             if (this_out_y1 < 0) {
