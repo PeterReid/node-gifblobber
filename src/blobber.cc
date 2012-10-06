@@ -45,7 +45,6 @@ Foozle::Foozle()
 Foozle::~Foozle()
 {
     delete[] pixels;
-    printf("Freed\n");
 }
     
 Handle<Value> Foozle::New(const Arguments& args)
@@ -162,7 +161,6 @@ void Foozle::Work_Slurp(uv_work_t* req) {
         }
     }
 
-    printf("Width = %d, height = %d\n", gif_file->SWidth, gif_file->SHeight);
     foozle->gif_width = gif_file->SWidth;
     foozle->gif_height = gif_file->SHeight;
     int pixel_count = gif_file->SWidth * gif_file->SHeight;
@@ -241,7 +239,6 @@ static void interp_quad(int ul, int ur, int bl, int br, int width, int height, i
             
             val += horizIncr;
         }
-        //printf("for y=%d, Val ended at %d\n", y, val);
         output += output_stride;
         horizIncr += sideDeltaIncr;
         left += leftIncr;
@@ -262,9 +259,7 @@ void Foozle::Work_Stretch(uv_work_t* req) {
         int max_in_x = clamp(0, (int)baton->source_right, foozle->gif_width-1);
         int min_in_y = clamp(0, (int)baton->source_top, foozle->gif_height-1);
         int max_in_y = clamp(0, (int)baton->source_bottom, foozle->gif_height-1);
-        printf("min_in_x = %d, max_in_x = %d\n", min_in_x, max_in_x);
-        printf("min_in_y = %d, max_in_y = %d\n", min_in_y, max_in_y);
-
+        
         for (int in_y = min_in_y; in_y <= max_in_y; in_y++) {
           int out_y1 = (int)((in_y - baton->source_top) * baton->result_height / source_height);
           int out_y2 = (int)(((in_y+1) - baton->source_top) * baton->result_height / source_height);
@@ -324,7 +319,6 @@ void Foozle::Work_Stretch(uv_work_t* req) {
           }
           if (in_y >= foozle->gif_height) break;
 
-          printf("doing row %d\n", out_y);
           // todo: find bounds first, then loop
           for (int out_x=0; out_x < baton->result_width; out_x++) {
             int in_x = (int)(out_x*source_width/baton->result_width + baton->source_left);
@@ -348,9 +342,7 @@ void Foozle::Work_AfterStretch(uv_work_t* req) {
     
     if (!baton->callback.IsEmpty() && baton->callback->IsFunction()) {
         TRY_CATCH_CALL(foozle->handle_, baton->callback, 1, argv);
-        printf("After teh try-catch\n");
     }
-    printf("hmm\n");
     
     delete baton;
 }

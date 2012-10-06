@@ -43,10 +43,8 @@ public:
             callback = Persistent<Function>::New(cb_);
         }
         virtual ~Baton() {
-            printf("~Baton");
             foozle->Unref();
             callback.Dispose();
-            printf("~Baton}");
         }
     };
 
@@ -66,9 +64,7 @@ public:
         }
         
         virtual ~SlurpBaton() {
-            printf("~SlurpBaton");
             buffer.Dispose();
-            printf("~SlurpBaton}");
         }
         
         static int ReadMemoryGif (GifFileType *gif_file, GifByteType *buffer, int size);
@@ -99,9 +95,7 @@ public:
         }
         
         virtual ~StretchBaton() {
-            printf("~StretchBaton");
             dest_buffer.Dispose();
-            printf("~StretchBaton}");
         }
     };
     
