@@ -326,11 +326,13 @@ void Foozle::Work_Stretch(uv_work_t* req) {
           }
           if (in_y >= foozle->gif_height) break;
 
+          unsigned char *scan_line = foozle->pixels + foozle->gif_width*in_y;
+          
           // todo: find bounds first, then loop
           for (int out_x=0; out_x < baton->result_width; out_x++) {
             int in_x = (int)(out_x*source_width/baton->result_width + baton->source_left);
             if (in_x >=0 && out_x < foozle->gif_width) {
-              baton->dest_pixels[i] = foozle->palette[foozle->pixels[in_x + foozle->gif_width*in_y]];
+              baton->dest_pixels[i] = foozle->palette[scan_line[in_x]];
             }
 
             i++;
