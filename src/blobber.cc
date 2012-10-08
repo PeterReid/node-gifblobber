@@ -317,7 +317,12 @@ void Foozle::Work_Stretch(uv_work_t* req) {
         }
     } else {
         int i=0;
-
+#define ZOOM_OUT_SHIFT 15
+        //int min_out_x = clamp(0, (0-baton->source_left)*width_ratio, baton->result_width);
+        //int max_out_x = clamp(0, (foozle->gif_width-baton->source_left)*width_ratio, baton->result_width);
+        
+        int x_step_shifted = (int)(source_width/baton->result_width*(1<<ZOOM_OUT_SHIFT) + .5);
+        int in_x_shifted_initial = (int)(baton->source_left*(1<<ZOOM_OUT_SHIFT) + 0.5);
         for (int out_y = 0; out_y < baton->result_height; out_y++) {
           int in_y = (int)(out_y*source_height/baton->result_height + baton->source_top);
           if (in_y < 0) {
@@ -329,12 +334,14 @@ void Foozle::Work_Stretch(uv_work_t* req) {
           unsigned char *scan_line = foozle->pixels + foozle->gif_width*in_y;
           
           // todo: find bounds first, then loop
-          for (int out_x=0; out_x < baton->result_width; out_x++) {
-            int in_x = (int)(out_x*source_width/baton->result_width + baton->source_left);
-            if (in_x >=0 && out_x < foozle->gif_width) {
+          int in_x_shifted = in_x_shifted_initial;
+          for (int out_x=0; out_x < baton->result_width; out_x++, in_x_shifted += x_step_shifted) {
+            int in_x = in_x_shifted >> ZOOM_OUT_SHIFT;
+            
+            if (in_x >=0 && in_x < foozle->gif_width) {
               baton->dest_pixels[i] = foozle->palette[scan_line[in_x]];
             }
-
+            
             i++;
           }
         }
