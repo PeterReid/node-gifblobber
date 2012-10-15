@@ -253,6 +253,10 @@ void Foozle::Work_Stretch(uv_work_t* req) {
     double source_width = baton->source_right - baton->source_left;
     bool zoomed_in = source_width * 2 < baton->result_width;
 
+    printf("Stretch: (%f, %f)-(%f, %f)\n",
+      baton->source_left, baton->source_top,
+      baton->source_right, baton->source_bottom);
+
     if (zoomed_in) {
         // We are zoomed in enough to require fancy interpolation
         int min_in_x = clamp(0, (int)baton->source_left, foozle->gif_width-1);
