@@ -257,6 +257,8 @@ void Foozle::Work_Stretch(uv_work_t* req) {
       baton->source_left, baton->source_top,
       baton->source_right, baton->source_bottom);
 
+    memset(baton->dest_pixels, 0, baton->result_width * baton->result_height * 4);
+
     if (zoomed_in) {
         // We are zoomed in enough to require fancy interpolation
         int min_in_x = clamp(0, (int)baton->source_left, foozle->gif_width-1);
