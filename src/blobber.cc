@@ -157,7 +157,7 @@ void Foozle::Work_Slurp(uv_work_t* req) {
         
         for (int i = 0; i < colors; i++) {
             GifColorType color = gif_file->SColorMap->Colors[i];
-            foozle->palette[i] = color.Red | (color.Green<<8) | (color.Blue<<16) | 0xff000000;
+            foozle->palette[i] = color.Red | (color.Green<<8) | (color.Blue<<16) | 0x40000000;
         }
     }
 
