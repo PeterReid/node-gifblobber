@@ -1,6 +1,4 @@
 #include <string.h>
-#include <node.h>
-#include <node_buffer.h>
 #include <algorithm>
 
 #include "macros.h"
@@ -370,11 +368,3 @@ void Foozle::Work_AfterStretch(uv_work_t* req) {
 }
 
 
-
-namespace {
-  void RegisterModule(v8::Handle<Object> target) {
-      Foozle::Init(target);
-  }
-}
-
-NODE_MODULE(node_gifblobber, RegisterModule);

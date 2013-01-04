@@ -2,6 +2,7 @@
 #define NODE_SQLITE3_SRC_DATABASE_H
 
 #include <node.h>
+#include <node_buffer.h>
 
 #include <string>
 #include <queue>
