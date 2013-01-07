@@ -55,6 +55,14 @@ const char* sqlite_authorizer_string(int type);
     }                                                                          \
     int var = args[i]->Int32Value();
 
+#define REQUIRE_ARGUMENT_BOOLEAN(i, var)                                       \
+    if (args.Length() <= (i) || !args[i]->IsBoolean()) {                       \
+        return ThrowException(Exception::TypeError(                            \
+            String::New("Argument " #i " must be a boolean"))                  \
+        );                                                                     \
+    }                                                                          \
+    bool var = args[i]->BooleanValue();
+
 #define REQUIRE_ARGUMENT_DOUBLE(i, var)                                        \
     if (args.Length() <= (i) || !args[i]->IsNumber()) {                        \
         return ThrowException(Exception::TypeError(                            \

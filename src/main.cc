@@ -1,6 +1,5 @@
 #include "blobber.h"
 #include "decoder.h"
-#include "blobber.h"
 
 namespace {
   void RegisterModule(v8::Handle<Object> target) {
