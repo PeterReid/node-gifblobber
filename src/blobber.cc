@@ -258,12 +258,12 @@ void Foozle::Work_Stretch(uv_work_t* req) {
     int clamp_max = 22;
     int *palette = baton->filtered ? foozle->filtered_palette : foozle->unfiltered_palette;
 
-    printf("Stretch: (%f, %f)-(%f, %f), clamping [%d,%d]\n",
+/*    printf("Stretch: (%f, %f)-(%f, %f), clamping [%d,%d]\n",
       baton->source_left, baton->source_top,
       baton->source_right, baton->source_bottom,
-      clamp_min, clamp_max);
+      clamp_min, clamp_max);*/
 
-    memset(baton->dest_pixels, 0, baton->result_width * baton->result_height * 4);
+    //memset(baton->dest_pixels, 0, baton->result_width * baton->result_height * 4);
 
     if (zoomed_in) {
         // We are zoomed in enough to require fancy interpolation
