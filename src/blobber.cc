@@ -1,18 +1,45 @@
+
 #include <string.h>
 #include <algorithm>
 
 #include "macros.h"
 #include "blobber.h"
-
-using namespace node_sqlite3;
-
-
+#include <node_api.h>
 
 #define RADAR_COLOR_COUNT 15
 
 
 static const int UNFILTERED_BLANK_OUT_UNTIL = 6;
 static const int FILTERED_BLANK_OUT_UNTIL = 9;
+
+
+
+napi_value slurp(napi_env env, napi_callback_info cbinfo) {
+  napi_status status;
+  napi_value argv[10];
+  size_t argc = 10;
+  const char *error = nullptr;
+  const char *invalid_arguments_error = "invalid argument types";
+  napi_value cbinfo_this;
+  void *cbinfo_data;
+  
+  status = napi_get_cb_info(env, cbinfo, &argc, argv, &cbinfo_this, &cbinfo_data);
+  if (status != napi_ok) goto out;
+  if (argc < 10) {
+    error = "Wrong number of arguments.";
+    goto out;
+  }
+    
+  REQUIRE_ARGUMENT_BUFFER(0, buffer);
+  REQUIRE_ARGUMENT_FUNCTION(1, callback);
+
+}
+#if 0
+
+
+
+
+
 
 Persistent<FunctionTemplate> Foozle::constructor_template;
 
@@ -376,3 +403,4 @@ void Foozle::Work_AfterStretch(uv_work_t* req) {
 }
 
 
+#endif

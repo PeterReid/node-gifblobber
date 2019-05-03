@@ -1,19 +1,36 @@
-  {
-    "name": "gifblobber",
-    "description": "Blobby gif stretching",
-    "version": "0.0.1",
-    "homepage": "http://github.com/PeterReid/node-gifblobber",
-    "author": {
-    },
-    "contributors": [
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/PeterReid/node-gifblobber"
-    },
-    "engines": {
-        "node": ">= 0.6.13"
-    },
-    "licenses": [{ "type": "BSD" }],
-    "main": "./lib/index"
+{
+  "name": "gifblobber",
+  "description": "Blobby gif stretching",
+  "version": "0.0.1",
+  "homepage": "http://github.com/PeterReid/node-gifblobber",
+  "author": "",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PeterReid/node-gifblobber"
+  },
+  "engines": {
+    "node": ">= 0.6.13"
+  },
+  "licenses": [
+    {
+      "type": "BSD"
+    }
+  ],
+  "main": "./lib/index",
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "gypfile": true,
+  "readme": "# NAME\r\n\r\nnode-sqlite3 - Asynchronous, non-blocking [SQLite3](http://sqlite.org/) bindings for [node.js](https://github.com/joyent/node) 0.2-0.4 (versions 2.0.x), **0.6.13+ and 0.8.x** (versions 2.1.x).\r\n\r\n\r\n\r\n# USAGE\r\n\r\nInstall with `npm install sqlite3`.\r\n\r\n``` js\r\nvar sqlite3 = require('sqlite3').verbose();\r\nvar db = new sqlite3.Database(':memory:');\r\n\r\ndb.serialize(function() {\r\n  db.run(\"CREATE TABLE lorem (info TEXT)\");\r\n\r\n  var stmt = db.prepare(\"INSERT INTO lorem VALUES (?)\");\r\n  for (var i = 0; i < 10; i++) {\r\n      stmt.run(\"Ipsum \" + i);\r\n  }\r\n  stmt.finalize();\r\n\r\n  db.each(\"SELECT rowid AS id, info FROM lorem\", function(err, row) {\r\n      console.log(row.id + \": \" + row.info);\r\n  });\r\n});\r\n\r\ndb.close();\r\n```\r\n\r\n\r\n\r\n# FEATURES\r\n\r\n* Straightforward query and parameter binding interface\r\n* Full Buffer/Blob support\r\n* Extensive [debugging support](https://github.com/developmentseed/node-sqlite3/wiki/Debugging)\r\n* [Query serialization](https://github.com/developmentseed/node-sqlite3/wiki/Control-Flow) API\r\n* [Extension support](https://github.com/developmentseed/node-sqlite3/wiki/Extensions)\r\n* Big test suite\r\n* Written in modern C++ and tested for memory leaks\r\n\r\n\r\n\r\n# API\r\n\r\nSee the [API documentation](https://github.com/developmentseed/node-sqlite3/wiki) in the wiki.\r\n\r\n\r\n# BUILDING\r\n\r\nMake sure you have the sources for `sqlite3` installed. Mac OS X ships with these by default. If you don't have them installed, install the `-dev` package with your package manager, e.g. `apt-get install libsqlite3-dev` for Debian/Ubuntu. Make sure that you have at least `libsqlite3` >= 3.6.\r\n\r\nBulding also requires node-gyp to be installed. You can do this with npm:\r\n\r\n    npm install -g node-gyp\r\n\r\nTo obtain and build the bindings:\r\n\r\n    git clone git://github.com/developmentseed/node-sqlite3.git\r\n    cd node-sqlite3\r\n    ./configure\r\n    make\r\n\r\nYou can also use [`npm`](https://github.com/isaacs/npm) to download and install them:\r\n\r\n    npm install sqlite3\r\n\r\n\r\n\r\n# TESTS\r\n\r\n[expresso](https://github.com/visionmedia/expresso) is required to run unit tests.\r\n\r\n    npm install expresso\r\n    make test\r\n\r\n\r\n\r\n# CONTRIBUTORS\r\n\r\n* [Konstantin Käfer](https://github.com/kkaefer)\r\n* [Dane Springmeyer](https://github.com/springmeyer)\r\n* [Will White](https://github.com/willwhite)\r\n* [Orlando Vazquez](https://github.com/orlandov)\r\n* [Artem Kustikov](https://github.com/artiz)\r\n* [Eric Fredricksen](https://github.com/grumdrig)\r\n* [John Wright](https://github.com/mrjjwright)\r\n* [Ryan Dahl](https://github.com/ry)\r\n* [Tom MacWright](https://github.com/tmcw)\r\n* [Carter Thaxton](https://github.com/carter-thaxton)\r\n* [Audrius Kažukauskas](https://github.com/audriusk)\r\n* [Johannes Schauer](https://github.com/pyneo)\r\n\r\n\r\n\r\n# ACKNOWLEDGEMENTS\r\n\r\nThanks to [Orlando Vazquez](https://github.com/orlandov),\r\n[Eric Fredricksen](https://github.com/grumdrig) and\r\n[Ryan Dahl](https://github.com/ry) for their SQLite bindings for node, and to mraleph on Freenode's #v8 for answering questions.\r\n\r\nDevelopment of this module is sponsored by [Development Seed](http://developmentseed.org/).\r\n\r\n\r\n# LICENSE\r\n\r\n`node-sqlite3` is [BSD licensed](https://github.com/developmentseed/node-sqlite3/raw/master/LICENSE).\r\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/PeterReid/node-gifblobber/issues"
+  },
+  "_id": "gifblobber@0.0.1",
+  "dist": {
+    "shasum": "5958929edf5ac00bfe4387f783046b747ee1da10"
+  },
+  "_resolved": "git://github.com/PeterReid/node-gifblobber.git#a51d184a0a18866ae8f60e454e79816a7aa912c8",
+  "_from": "gifblobber@git://github.com/PeterReid/node-gifblobber.git"
 }

@@ -1,11 +1,9 @@
-#include <node.h>
-#include <node_buffer.h>
+#include <node_api.h>
 #include <gif_lib.h>
 
 using namespace v8;
 using namespace node;
 
-#include "baton.h"
 #include "macros.h"
 
 static inline int clamp(int inclusive_min, int x, int inclusive_max) {
