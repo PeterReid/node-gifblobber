@@ -270,11 +270,11 @@ napi_value stretch(napi_env env, napi_callback_info cbinfo) {
       error = "Palette buffers must be of length 256";
       goto out;
   }
-  if (result_width <= 0 || result_height <= 0 || result_width*result_height*4 != dest_buffer_length) {
+  if (result_width <= 0 || result_height <= 0 || result_width*result_height*4 != (int32_t)dest_buffer_length) {
       error = "Buffer length is not consistent with given width and height";
       goto out;
   }
-  if (source_width <= 0 || source_height <= 0 || source_width*source_height != source_buffer_length) {
+  if (source_width <= 0 || source_height <= 0 || source_width*source_height != (int32_t)source_buffer_length) {
       error = "Buffer length is not consistent with given width and height";
       goto out;
   }

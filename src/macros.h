@@ -25,7 +25,7 @@
 
 #define REQUIRE_ARGUMENT_BUFFER(ARG_INDEX, DATA, LENGTH) \
   size_t LENGTH; \
-  char *DATA; \
+  void *DATA; \
   { \
     bool is_buffer; \
     status = napi_is_buffer(env, argv[ARG_INDEX], &is_buffer); \
@@ -34,7 +34,7 @@
       goto out; \
     } \
   } \
-  status = napi_get_buffer_info(env, argv[ARG_INDEX], &(void *)DATA, &LENGTH); \
+  status = napi_get_buffer_info(env, argv[ARG_INDEX], &DATA, &LENGTH); \
   if (status != napi_ok) { \
     error = invalid_arguments_error; \
     goto out; \
@@ -42,7 +42,7 @@
 
 #define REQUIRE_ARGUMENT_BUFFER_REF(ARG_INDEX, DATA, LENGTH, REF) \
   size_t LENGTH; \
-  char *DATA; \
+  void *DATA; \
   { \
     bool is_buffer; \
     status = napi_is_buffer(env, argv[ARG_INDEX], &is_buffer); \
@@ -51,7 +51,7 @@
       goto out; \
     } \
   } \
-  status = napi_get_buffer_info(env, argv[ARG_INDEX], &(void *)DATA, &LENGTH); \
+  status = napi_get_buffer_info(env, argv[ARG_INDEX], &DATA, &LENGTH); \
   if (status != napi_ok) { \
     error = invalid_arguments_error; \
     goto out; \

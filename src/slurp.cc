@@ -99,8 +99,7 @@ void slurp_gif_complete(napi_env env, napi_status status, void* data)
   
   napi_value cb;
   status = napi_get_reference_value(env, baton->callback, &cb);
-  if (status != napi_ok) goto out;
-  
+
   napi_value err;
   napi_value width;
   napi_value height;
@@ -109,6 +108,12 @@ void slurp_gif_complete(napi_env env, napi_status status, void* data)
   napi_value filtered_palette_buffer;
   
   void *buffer_data;
+  size_t data_size;
+
+  napi_value args[6];
+  napi_value result;
+
+  if (status != napi_ok) goto out;
   
   status = napi_get_null(env, &err);
   if (status != napi_ok) goto out;
@@ -120,7 +125,7 @@ void slurp_gif_complete(napi_env env, napi_status status, void* data)
   if (status != napi_ok) goto out;
   
   // Pixel buffer
-  size_t data_size = baton->width * baton->height;
+  data_size = baton->width * baton->height;
   status = napi_create_buffer(env, data_size, &buffer_data, &pixel_buffer);
   if (status != napi_ok) goto out;
   memcpy(buffer_data, baton->pixels, data_size);
@@ -135,7 +140,6 @@ void slurp_gif_complete(napi_env env, napi_status status, void* data)
   if (status != napi_ok) goto out;
   memcpy(buffer_data, baton->filtered_palette, 256*4);
   
-  napi_value args[6];
   args[0] = err;
   args[1] = width;
   args[2] = height;
@@ -143,7 +147,6 @@ void slurp_gif_complete(napi_env env, napi_status status, void* data)
   args[4] = unfiltered_palette_buffer;
   args[5] = filtered_palette_buffer;
 
-  napi_value result;
   napi_call_function(env, cb, cb, 6, args, &result);
   
   
@@ -166,22 +169,24 @@ napi_value slurp(napi_env env, napi_callback_info cbinfo) {
   napi_value argv[2];
   napi_value cbinfo_this;
   void *cbinfo_data;
-  char *gif_bytes;
+  void *gif_bytes;
   size_t gif_byte_count;
   
   slurp_baton *baton = nullptr;
 
   baton = new slurp_baton();
+
+  napi_value slurp_description;
+  napi_value buffer, cb;
   
   status = napi_get_cb_info(env, cbinfo, &argc, argv, &cbinfo_this, &cbinfo_data);
   if (status != napi_ok) goto out;
   
-  napi_value buffer = argv[0];
-  napi_value cb = argv[1];
+  buffer = argv[0];
+  cb = argv[1];
   
-  status = napi_get_buffer_info(env, buffer, &(void *)gif_bytes, &gif_byte_count);
+  status = napi_get_buffer_info(env, buffer, &gif_bytes, &gif_byte_count);
   
-  napi_value slurp_description;
   status = napi_create_string_utf8(env, "gif slurp", NAPI_AUTO_LENGTH, &slurp_description);
   if (status != napi_ok) goto out;
   
@@ -197,7 +202,7 @@ napi_value slurp(napi_env env, napi_callback_info cbinfo) {
   baton->work = work;
   baton->callback = callback_ref;
   baton->gif_buffer_ref = buffer_ref;
-  baton->gif_buffer = gif_bytes;
+  baton->gif_buffer = (const char *)gif_bytes;
   baton->gif_length = gif_byte_count;
   baton->spewed_length = 0;
   baton->status = 0;
